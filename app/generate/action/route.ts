@@ -7,6 +7,8 @@ import { createReadStream } from "fs";
 import OpenAI, { toFile } from "openai";
 import { generateAdPrompt } from "@/app/lib/generateAdPrompt";
 
+export const runtime = "nodejs";
+
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
 
 export async function POST(req: NextRequest) {
