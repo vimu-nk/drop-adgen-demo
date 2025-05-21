@@ -49,7 +49,12 @@ export async function POST(req: NextRequest) {
 			model: "gpt-image-1",
 			image: [openAiFile],
 			prompt,
-			size: formData.get("size") as string,
+			size: formData.get("size") as
+				| "1024x1024"
+				| "1536x1024"
+				| "1024x1536"
+				| null
+				| undefined,
 			quality: formData.get("quality") as "low" | "medium" | "high",
 		});
 
@@ -60,6 +65,13 @@ export async function POST(req: NextRequest) {
 			console.log("No usage details provided in the response.");
 		}
 
+		if (
+			!response.data ||
+			!Array.isArray(response.data) ||
+			!response.data[0]?.b64_json
+		) {
+			throw new Error("No image data returned from OpenAI API");
+		}
 		const base64 = response.data[0].b64_json;
 		return NextResponse.json({ image: `data:image/png;base64,${base64}` });
 	} catch (error) {
